@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'ricerca-brani-cache-v3';
+const CACHE_NAME = 'ricerca-brani-cache-v4';
 const urlsToCache = [
   '/ricerca-brani-miniapp/',
   '/ricerca-brani-miniapp/index.html',
@@ -8,36 +8,40 @@ const urlsToCache = [
   '/ricerca-brani-miniapp/icon-512.png'
 ];
 
-// Install event
-self.addEventListener('install', function(event) {
+// Installazione
+self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(function(cache) {
-        return cache.addAll(urlsToCache);
-      })
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
-// Activate event - pulizia vecchie cache
-self.addEventListener('activate', function(event) {
+// Attivazione
+self.addEventListener('activate', event => {
+  self.clients.claim();
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(function(name) {
-          return name !== CACHE_NAME;
-        }).map(function(name) {
-          return caches.delete(name);
-        })
+        cacheNames.filter(name => name !== CACHE_NAME)
+          .map(name => caches.delete(name))
       );
     })
   );
 });
 
-// Fetch event - serve cache o va in rete
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    }).catch(() => caches.match('/ricerca-brani-miniapp/index.html'))
-  );
+// Intercetta fetch
+self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match('/ricerca-brani-miniapp/index.html')
+      )
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => response || fetch(event.request))
+    );
+  }
 });
