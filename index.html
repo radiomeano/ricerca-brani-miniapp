@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Ricerca Brani Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            color: #333;
+            padding: 1em;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #222;
+            font-size: 1.8em;
+            margin-top: 0.5em;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 1em;
+            font-size: 1.1em;
+            margin: 1em 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8em;
+            justify-content: center;
+        }
+        .buttons button {
+            padding: 0.6em 1.2em;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            color: white;
+            flex: 1 0 40%;
+            max-width: 200px;
+        }
+        .google { background-color: #4285F4; }
+        .wikipedia { background-color: #777; }
+        .discogs { background-color: #222; }
+        .whosampled { background-color: #D2691E; }
+        .genius { background-color: #FFCC00; color: #000; }
+        .youtube { background-color: #FF0000; }
+        .spotify { background-color: #1DB954; }
+        .perplexity { background-color: #4B0082; }
+        .musicbrainz { background-color: #BA55D3; }
+        .allmusic { background-color: #4682B4; }
+        .lastfm { background-color: #D51007; }
+        .deezer { background-color: #00C7F2; }
+        .applemusic { background-color: #FA57C1; }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ricerca Brani</h1>
+    <input type="text" id="query" placeholder="Es. Queen - Bohemian Rhapsody">
+    <div class="buttons">
+        <button class="google" onclick="search('google')">Google</button>
+        <button class="wikipedia" onclick="search('wikipedia')">Wikipedia</button>
+        <button class="discogs" onclick="search('discogs')">Discogs</button>
+        <button class="whosampled" onclick="search('whosampled')">WhoSampled</button>
+        <button class="genius" onclick="search('genius')">Genius</button>
+        <button class="youtube" onclick="search('youtube')">YouTube</button>
+        <button class="spotify" onclick="search('spotify')">Spotify</button>
+        <button class="perplexity" onclick="search('perplexity')">Perplexity</button>
+        <button class="musicbrainz" onclick="search('musicbrainz')">MusicBrainz</button>
+        <button class="allmusic" onclick="search('allmusic')">AllMusic</button>
+        <button class="lastfm" onclick="search('lastfm')">Last.fm</button>
+        <button class="deezer" onclick="search('deezer')">Deezer</button>
+        <button class="applemusic" onclick="search('applemusic')">Apple Music</button>
+    </div>
+
+    <script>
+        function search(site) {
+            const input = document.getElementById('query').value.trim();
+            if (!input) return alert("Inserisci artista e titolo.");
+            const encoded = encodeURIComponent(input);
+            let url = "";
+
+            switch (site) {
+                case 'google': url = "https://www.google.com/search?q=Release+" + encoded; break;
+                case 'wikipedia': url = "https://it.wikipedia.org/wiki/Speciale:Ricerca?search=" + encodeURIComponent(input.split('-')[0].trim()); break;
+                case 'discogs': url = "https://www.discogs.com/search/?q=" + encoded + "&type=all"; break;
+                case 'whosampled': url = "https://www.whosampled.com/search/?q=" + encoded; break;
+                case 'genius': url = "https://genius.com/search?q=" + encoded; break;
+                case 'youtube': url = "https://www.youtube.com/results?search_query=" + encoded; break;
+                case 'spotify': url = "https://open.spotify.com/search/" + encoded; break;
+                case 'perplexity': url = "https://www.perplexity.ai/search?q=" + encoded; break;
+                case 'musicbrainz': url = "https://musicbrainz.org/search?query=" + encoded + "&type=recording&method=indexed"; break;
+                case 'allmusic': url = "https://www.allmusic.com/search/all/" + encoded; break;
+                case 'lastfm': url = "https://www.last.fm/search?q=" + encoded; break;
+                case 'deezer': url = "https://www.deezer.com/search/" + encoded; break;
+                case 'applemusic': url = "https://music.apple.com/search?term=" + encoded; break;
+            }
+
+            window.open(url, '_blank');
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
