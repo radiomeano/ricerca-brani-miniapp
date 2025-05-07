@@ -1,23 +1,24 @@
 
-const CACHE_NAME = 'ricerca-brani-cache-v4';
+const CACHE_NAME = 'ricerca-brani-cache-v5';
+
+const base = self.location.pathname.replace(/\/[^\/]*$/, '/'); // determina la base dinamica
 const urlsToCache = [
-  '/ricerca-brani-miniapp/',
-  '/ricerca-brani-miniapp/index.html',
-  '/ricerca-brani-miniapp/manifest.json',
-  '/ricerca-brani-miniapp/icon-192.png',
-  '/ricerca-brani-miniapp/icon-512.png'
+  base,
+  base + 'index.html',
+  base + 'manifest.json',
+  base + 'icon-192.png',
+  base + 'icon-512.png'
 ];
 
-// Installazione
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
   );
 });
 
-// Attivazione
 self.addEventListener('activate', event => {
   self.clients.claim();
   event.waitUntil(
@@ -30,12 +31,11 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Intercetta fetch
 self.addEventListener('fetch', event => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() =>
-        caches.match('/ricerca-brani-miniapp/index.html')
+        caches.match(base + 'index.html')
       )
     );
   } else {
