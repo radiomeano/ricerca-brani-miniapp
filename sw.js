@@ -1,11 +1,11 @@
 
-const CACHE_NAME = 'ricerca-brani-cache-v2';
+const CACHE_NAME = 'ricerca-brani-cache-v3';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/ricerca-brani-miniapp/',
+  '/ricerca-brani-miniapp/index.html',
+  '/ricerca-brani-miniapp/manifest.json',
+  '/ricerca-brani-miniapp/icon-192.png',
+  '/ricerca-brani-miniapp/icon-512.png'
 ];
 
 // Install event
@@ -38,6 +38,6 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetch(event.request);
-    }).catch(() => caches.match('/index.html'))
+    }).catch(() => caches.match('/ricerca-brani-miniapp/index.html'))
   );
 });
